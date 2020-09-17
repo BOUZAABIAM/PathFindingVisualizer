@@ -51,7 +51,7 @@
                         </ImageView>
                      </children>
                   </GridPane>
-                  <Canvas height="601.0" width="766.0" GridPane.rowIndex="1" />
+                  <Canvas fx:id="canvas" height="632.0" width="632.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                </children>
             </GridPane>
             <GridPane style="-fx-background-color: #6279ef;">

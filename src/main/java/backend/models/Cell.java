@@ -1,11 +1,12 @@
 package main.java.backend.models;
 
 public class Cell {
-    private int x;
-    private int y;
+    private double x;
+    private double y;
+    // Value : 0 --> Open / 1 --> Source / 2 --> Destination / -1 --> Blocked
     private int value;
 
-    public Cell(int x, int y, int value) {
+    public Cell(double x, double y, int value) {
         this.x = x;
         this.y = y;
         this.value = value;
@@ -17,19 +18,19 @@ public class Cell {
         this.y = 0;
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         this.y = y;
     }
 
