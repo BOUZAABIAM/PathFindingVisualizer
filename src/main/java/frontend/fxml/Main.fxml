@@ -112,6 +112,28 @@
                               </GridPane>
                            </children>
                         </GridPane>
+                        <GridPane GridPane.rowIndex="1">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="124.60001220703126" minHeight="6.99998512268067" prefHeight="47.000010299682614" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="251.80001487731934" minHeight="10.0" prefHeight="50.999989700317386" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="287.2000411987305" minHeight="10.0" prefHeight="287.2000411987305" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Button fx:id="btnAddSrcDst" disable="true" mnemonicParsing="false" onMouseClicked="#handleClicks" prefHeight="26.0" prefWidth="178.0" stylesheets="@../resources/css/stylesheet.css" text="Add Source/Destination" textFill="WHITE">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </GridPane.margin>
+                              </Button>
+                              <Button fx:id="btnAddBlocks" disable="true" mnemonicParsing="false" onMouseClicked="#handleClicks" prefHeight="26.0" prefWidth="178.0" stylesheets="@../resources/css/stylesheet.css" text="Add Blocks" textFill="WHITE" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </GridPane.margin>
+                              </Button>
+                           </children>
+                        </GridPane>
                      </children>
                   </GridPane>
                </children>

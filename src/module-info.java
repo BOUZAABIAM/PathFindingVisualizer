@@ -4,5 +4,4 @@ module PathFindingVisualizer {
 
     opens main.java.frontend;
     opens main.java.frontend.controllers to javafx.fxml;
-
 }
