@@ -20,7 +20,7 @@ public class Grid {
             List<Cell> line  = new ArrayList<>();
             double x = 0;
             for(int j=0;j<size;j++){
-                line.add(new Cell(x,y,0));
+                line.add(new Cell(x,y,i,j,0));
                 x += cellWidth;
             }
             grid.add(line);
@@ -48,9 +48,9 @@ public class Grid {
         for(List<Cell> line :grid){
             for (Cell cell :line){
                 System.out.print("(");
-                System.out.print(cell.getX());
+                System.out.print(cell.getI());
                 System.out.print(",");
-                System.out.print(cell.getY());
+                System.out.print(cell.getJ());
                 System.out.print(",");
                 System.out.print(cell.getValue());
                 System.out.print(")"+"\t");

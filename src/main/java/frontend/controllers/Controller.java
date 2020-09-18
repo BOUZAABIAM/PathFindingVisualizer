@@ -17,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import main.java.backend.models.Cell;
 import main.java.backend.models.Grid;
+import main.java.backend.services.AStar;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -61,6 +62,7 @@ public class Controller implements Initializable {
     private double pressedX;
     private double pressedY;
     private int eraserClicks =0;
+    List<Cell> path = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -89,6 +91,8 @@ public class Controller implements Initializable {
                 GraphicsContext gc = this.canvas.getGraphicsContext2D();
                 draw(gc,grid);
                 btnAddSrcDst.setDisable(false);
+                //source =null;
+                //destination = null;
             }catch (Exception e){
                 Alert a = new Alert(Alert.AlertType.WARNING);
                 a.setTitle("Warning");
@@ -162,7 +166,8 @@ public class Controller implements Initializable {
         }
         if(event.getSource()==btnRun){
             this.prepareGrid();
-            grid.tostring();
+            //grid.tostring();
+            this.runAStar();
         }
     }
 
@@ -243,6 +248,13 @@ public class Controller implements Initializable {
         }
     }
 
+    private void drawCellPath(Cell cell, GraphicsContext gc) {
+        if(cell != null && cell!=source && cell != destination){
+            gc.setFill(Color.BLUE);
+            gc.fillRect(cell.getX()+2,cell.getY()+2,cellWidth-4,cellWidth-4);
+        }
+    }
+
     private void eraseCell(Cell cell, GraphicsContext gc) {
         if(cell != null && cell!=source && cell != destination){
             gc.setFill(Color.WHITE);
@@ -298,5 +310,12 @@ public class Controller implements Initializable {
                 eraserClicks++;
             }
         }
+    }
+
+    public void runAStar(){
+        AStar aStar = new AStar(source,destination,grid.getGrid());
+        path = aStar.runAStar();
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        for(Cell cell:path) drawCellPath(cell,gc);
     }
 }
