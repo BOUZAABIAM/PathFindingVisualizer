@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -132,6 +133,29 @@
                                     <Insets left="5.0" right="5.0" />
                                  </GridPane.margin>
                               </Button>
+                              <GridPane GridPane.rowIndex="2">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints maxHeight="90.8000244140625" minHeight="0.0" prefHeight="42.400014877319336" vgrow="SOMETIMES" />
+                                  <RowConstraints maxHeight="192.8" minHeight="10.0" prefHeight="112.8" vgrow="SOMETIMES" />
+                                  <RowConstraints maxHeight="182.39998321533204" minHeight="10.0" prefHeight="132.8" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Button fx:id="btnRun" disable="true" mnemonicParsing="false" onMouseClicked="#handleClicks" prefHeight="26.0" prefWidth="178.0" stylesheets="@../resources/css/stylesheet.css" text="Run" textFill="WHITE" GridPane.rowIndex="2">
+                                       <GridPane.margin>
+                                          <Insets left="5.0" right="5.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                    <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="175.0" style="-fx-background-color: #3d47a0;" text="Algorithms" textAlignment="CENTER" textFill="WHITE" />
+                                    <ChoiceBox prefHeight="26.0" prefWidth="182.0" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets left="5.0" right="5.0" />
+                                       </GridPane.margin>
+                                    </ChoiceBox>
+                                 </children>
+                              </GridPane>
                            </children>
                         </GridPane>
                      </children>

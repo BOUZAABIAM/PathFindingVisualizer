@@ -51,6 +51,8 @@ public class Grid {
                 System.out.print(cell.getX());
                 System.out.print(",");
                 System.out.print(cell.getY());
+                System.out.print(",");
+                System.out.print(cell.getValue());
                 System.out.print(")"+"\t");
             }
             System.out.print("\n");

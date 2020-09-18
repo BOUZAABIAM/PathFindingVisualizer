@@ -10,6 +10,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -20,6 +21,7 @@ import main.java.backend.models.Grid;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -43,11 +45,18 @@ public class Controller implements Initializable {
     @FXML
     private Button btnAddBlocks;
 
+    @FXML
+    private Button btnRun;
+
     private int src_dist_clicks =0;
     private Grid grid;
     private double cellWidth;
     private Cell source;
     private Cell destination;
+    private int btnSrcDstClicks = 0;
+    private int btnAddBlocksClicks = 0;
+    private double pressedX;
+    private double pressedY;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -86,35 +95,92 @@ public class Controller implements Initializable {
 
         }
         if(event.getSource()==btnAddSrcDst){
-            btnAddSrcDst.setText("Save Source/Destination");
-            this.canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
-                public void handle(MouseEvent event) {
-                    double pressedX = event.getX();
-                    double pressedY = event.getY();
-                    //System.out.println(pressedX);
-                    //System.out.println(pressedY);
-                    Cell cell = findPressedCell(pressedX,pressedY,grid);
-                    GraphicsContext gc = canvas.getGraphicsContext2D();
-                    drawCell(src_dist_clicks,cell,gc);
-                    src_dist_clicks ++;
+            if(btnSrcDstClicks%2==0){
+                btnAddSrcDst.setText("Save Source/Destination");
+                this.canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
+                    public void handle(MouseEvent event) {
+                        double pressedX = event.getX();
+                        double pressedY = event.getY();
+                        Cell cell = findPressedCell(src_dist_clicks%2+1,pressedX,pressedY);
+                        GraphicsContext gc = canvas.getGraphicsContext2D();
+                        drawCell(src_dist_clicks,cell,gc);
+                        src_dist_clicks ++;
 
-                }
-            });
+                    }
+                });
+                btnSrcDstClicks ++;
+            }else{
+                btnAddSrcDst.setText("Change Source/Destination");
+                this.canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+
+                    }
+                });
+                btnAddBlocks.setDisable(false);
+                btnSrcDstClicks++;
+            }
+
+        }
+        if(event.getSource()==btnAddBlocks){
+            if(btnAddBlocksClicks%2== 0){
+                btnAddBlocks.setText("Save Blocks");
+                this.canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
+                    public void handle(MouseEvent event) {
+                        pressedX = event.getX();
+                        pressedY = event.getY();
+                        Cell cell = findPressedCell(-1,pressedX,pressedY);
+                        GraphicsContext gc = canvas.getGraphicsContext2D();
+                        drawBlocks(cell,gc);
+                    }
+                });
+                this.canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                    public void handle(MouseEvent event) {
+                        Cell cell = findPressedCell(-1,event.getX(),event.getY());
+                        GraphicsContext gc = canvas.getGraphicsContext2D();
+                        drawBlocks(cell,gc);
+                    }
+                });
+                btnAddBlocksClicks++;
+            }else{
+                btnAddBlocks.setText("Change Blocks");
+                this.canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
+                    public void handle(MouseEvent event) {
+                    }
+                });
+                this.canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                    public void handle(MouseEvent event) {
+                    }
+                });
+                btnAddBlocksClicks++;
+            }
+            btnRun.setDisable(false);
+        }
+        if(event.getSource()==btnRun){
+            grid.tostring();
         }
     }
 
-    private Cell findPressedCell(double pressedX, double pressedY, Grid grid) {
-        for(List<Cell> line:grid.getGrid()){
+    private Cell findPressedCell(int value,double pressedX, double pressedY) {
+        for(int j=0;j<grid.getGrid().size();j++){
+            List<Cell> line = grid.getGrid().get(j);
             Cell previous = line.get(0);
             for(int i=1;i<line.size();i++){
                 Cell current = line.get(i);
-                if(current.getX()-cellWidth<=pressedX && current.getY()-cellWidth<=pressedY && previous.getX()+cellWidth>=pressedX&&previous.getY()+cellWidth>=pressedY) return previous;
-                else if(current.getX()<=pressedX && current.getY()<=pressedY && current.getX()+cellWidth>=pressedX && current.getY()+cellWidth>=pressedY) return current;
+                if(current.getX()-cellWidth<=pressedX && current.getY()-cellWidth<=pressedY && previous.getX()+cellWidth>=pressedX&&previous.getY()+cellWidth>=pressedY){
+                    grid.getGrid().get(j).get(i-1).setValue(value);
+                    return previous;
+                }
+                else if(current.getX()<=pressedX && current.getY()<=pressedY && current.getX()+cellWidth>=pressedX && current.getY()+cellWidth>=pressedY) {
+                    grid.getGrid().get(j).get(i).setValue(value);
+                    return current;
+                }
                 else previous = current;
             }
         }
         return null;
     }
+
 
     public void draw(GraphicsContext gc,Grid grid){
         double cellWidth = grid.getGrid().get(0).get(1).getX();
@@ -139,26 +205,33 @@ public class Controller implements Initializable {
         if(value%2==0){
             if(value == 0){
                 gc.setFill(Color.GREEN);
-                gc.fillRect(cell.getX()+1,cell.getY()+1,cellWidth-1,cellWidth-1);
+                gc.fillRect(cell.getX()+2,cell.getY()+2,cellWidth-4,cellWidth-4);
                 gc.drawImage(new Image(getClass().getResource("icons/start.png").toString()),cell.getX()+cellWidth/4,cell.getY()+cellWidth/4,cellWidth/2,cellWidth/2);
                 source = cell;
             }else{
                 gc.setFill(Color.WHITE);
-                gc.fillRect(source.getX()+1,source.getY()+1,cellWidth-1,cellWidth-1);
-                gc.fillRect(destination.getX()+1,destination.getY()+1,cellWidth-1,cellWidth-1);
+                gc.fillRect(source.getX()+2,source.getY()+2,cellWidth-4,cellWidth-4);
+                gc.fillRect(destination.getX()+2,destination.getY()+2,cellWidth-4,cellWidth-4);
                 gc.setFill(Color.GREEN);
-                gc.fillRect(cell.getX()+1,cell.getY()+1,cellWidth-1,cellWidth-1);
+                gc.fillRect(cell.getX()+2,cell.getY()+2,cellWidth-4,cellWidth-4);
                 gc.drawImage(new Image(getClass().getResource("icons/start.png").toString()),cell.getX()+cellWidth/4,cell.getY()+cellWidth/4,cellWidth/2,cellWidth/2);
                 source = cell;
             }
 
         }else{
             gc.setFill(Color.RED);
-            gc.fillRect(cell.getX()+1,cell.getY()+1,cellWidth-1,cellWidth-1);
+            gc.fillRect(cell.getX()+2,cell.getY()+2,cellWidth-4,cellWidth-4);
             gc.drawImage(new Image(getClass().getResource("icons/finish-flag.png").toString()),cell.getX()+cellWidth/4,cell.getY()+cellWidth/4,cellWidth/2,cellWidth/2);
             destination = cell;
         }
 
+    }
+
+    private void drawBlocks(Cell cell, GraphicsContext gc) {
+        if(cell != null && cell!=source && cell != destination){
+            gc.setFill(Color.BLACK);
+            gc.fillRect(cell.getX()+2,cell.getY()+2,cellWidth-4,cellWidth-4);
+        }
     }
 
 
