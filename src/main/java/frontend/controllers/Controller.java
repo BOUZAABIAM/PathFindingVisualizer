@@ -313,9 +313,16 @@ public class Controller implements Initializable {
     }
 
     public void runAStar(){
-        AStar aStar = new AStar(source,destination,grid.getGrid());
-        path = aStar.runAStar();
+        List<List<Cell>> g = grid.getGrid();
+        AStar aStar = new AStar(source,destination,g);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        for(Cell cell:path) drawCellPath(cell,gc);
+        if(path.size()>0){
+            for(Cell cell:path) eraseCell(cell,gc);
+        }
+        path = aStar.runAStar();
+        gc = canvas.getGraphicsContext2D();
+        for(Cell cell:path) {
+            drawCellPath(cell,gc);
+        }
     }
 }

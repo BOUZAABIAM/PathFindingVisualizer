@@ -33,7 +33,7 @@ public class AStar {
         for(int i=0;i<grid.size();++i){
             for(int j=0;j<grid.size();++j){
                 grid.get(i).get(j).setHeuristicCost(Math.abs(i-destination.getI())+Math.abs(j-destination.getJ()));
-                if(grid.get(i).get(j).getValue()==-1) setBlocked(i,j);
+                //if(grid.get(i).get(j).getValue()==-1) setBlocked(i,j);
             }
         }
         grid.get(source.getI()).get(source.getJ()).setFinalCost(0);
@@ -51,7 +51,9 @@ public class AStar {
     }
 
     public void checkAndUpdateCost(Cell current, Cell t, int cost){
-        if(t == null || closed[t.getI()][t.getJ()])return;
+        if(t.getValue() == -1 || closed[t.getI()][t.getJ()])return;
+        //if(t == null || closed[t.getI()][t.getJ()])return;
+
         int t_final_cost = t.getHeuristicCost()+cost;
 
         boolean inOpen = open.contains(t);
@@ -69,7 +71,8 @@ public class AStar {
         Cell current;
         while(true){
             current = open.poll();
-            if(current==null)break;
+            if(current.getValue()==-1)break;
+            //if(current==null)break;
             closed[current.getI()][current.getJ()]=true;
 
             if(current.equals(destination)){
