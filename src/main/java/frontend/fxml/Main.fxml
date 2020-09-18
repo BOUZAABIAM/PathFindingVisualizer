@@ -50,6 +50,14 @@
                               <Insets />
                            </GridPane.margin>
                         </ImageView>
+                        <ImageView fx:id="eraser" fitHeight="28.0" fitWidth="29.0" onMouseClicked="#erase" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../resources/icons/eraser.png" />
+                           </image>
+                           <GridPane.margin>
+                              <Insets left="10.0" />
+                           </GridPane.margin>
+                        </ImageView>
                      </children>
                   </GridPane>
                   <Canvas fx:id="canvas" height="632.0" width="632.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />

@@ -1,5 +1,7 @@
 package main.java.backend.models;
 
+import java.security.PublicKey;
+
 public class Cell {
     private double x;
     private double y;
@@ -40,5 +42,14 @@ public class Cell {
 
     public void setValue(int value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "Cell{" +
+                "x=" + x +
+                ", y=" + y +
+                ", value=" + value +
+                '}';
     }
 }

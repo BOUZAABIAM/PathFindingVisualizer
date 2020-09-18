@@ -48,6 +48,9 @@ public class Controller implements Initializable {
     @FXML
     private Button btnRun;
 
+    @FXML
+    private ImageView eraser;
+
     private int src_dist_clicks =0;
     private Grid grid;
     private double cellWidth;
@@ -57,6 +60,7 @@ public class Controller implements Initializable {
     private int btnAddBlocksClicks = 0;
     private double pressedX;
     private double pressedY;
+    private int eraserClicks =0;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -157,6 +161,7 @@ public class Controller implements Initializable {
             btnRun.setDisable(false);
         }
         if(event.getSource()==btnRun){
+            this.prepareGrid();
             grid.tostring();
         }
     }
@@ -234,5 +239,60 @@ public class Controller implements Initializable {
         }
     }
 
+    private void eraseCell(Cell cell, GraphicsContext gc) {
+        if(cell != null && cell!=source && cell != destination){
+            gc.setFill(Color.WHITE);
+            gc.fillRect(cell.getX()+2,cell.getY()+2,cellWidth-4,cellWidth-4);
+        }
+    }
 
+    // delete changed src/dest
+    private void prepareGrid() {
+        for(int i=0;i<grid.getGrid().size();i++){
+            for(int j=0;j<grid.getGrid().size();j++){
+                Cell cell = grid.getGrid().get(i).get(j);
+                if(cell.getValue()==1 && (cell.getX()!=source.getX() || cell.getY()!=source.getY())) {
+                    grid.getGrid().get(i).get(j).setValue(0);
+                }
+                if(cell.getValue()==2 && (cell.getX()!=destination.getX() || cell.getY()!=destination.getY())) {
+                    grid.getGrid().get(i).get(j).setValue(0);
+                }
+            }
+        }
+    }
+
+
+    public void erase(MouseEvent event) {
+        if(event.getSource()==eraser){
+            if(eraserClicks%2==0){
+                this.canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
+                    public void handle(MouseEvent event) {
+                        pressedX = event.getX();
+                        pressedY = event.getY();
+                        Cell cell = findPressedCell(0,pressedX,pressedY);
+                        GraphicsContext gc = canvas.getGraphicsContext2D();
+                        eraseCell(cell,gc);
+                    }
+                });
+                this.canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                    public void handle(MouseEvent event) {
+                        Cell cell = findPressedCell(0,event.getX(),event.getY());
+                        GraphicsContext gc = canvas.getGraphicsContext2D();
+                        eraseCell(cell,gc);
+                    }
+                });
+                eraserClicks++;
+            }else{
+                this.canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
+                    public void handle(MouseEvent event) {
+                    }
+                });
+                this.canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                    public void handle(MouseEvent event) {
+                    }
+                });
+                eraserClicks++;
+            }
+        }
+    }
 }
