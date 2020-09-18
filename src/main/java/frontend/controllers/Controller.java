@@ -173,11 +173,15 @@ public class Controller implements Initializable {
             for(int i=1;i<line.size();i++){
                 Cell current = line.get(i);
                 if(current.getX()-cellWidth<=pressedX && current.getY()-cellWidth<=pressedY && previous.getX()+cellWidth>=pressedX&&previous.getY()+cellWidth>=pressedY){
-                    grid.getGrid().get(j).get(i-1).setValue(value);
+                    if(previous != null && previous!=source && previous != destination){
+                        grid.getGrid().get(j).get(i-1).setValue(value);
+                    }
                     return previous;
                 }
                 else if(current.getX()<=pressedX && current.getY()<=pressedY && current.getX()+cellWidth>=pressedX && current.getY()+cellWidth>=pressedY) {
-                    grid.getGrid().get(j).get(i).setValue(value);
+                    if(current != null && current!=source && current != destination){
+                        grid.getGrid().get(j).get(i).setValue(value);
+                    }
                     return current;
                 }
                 else previous = current;
