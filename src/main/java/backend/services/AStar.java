@@ -1,7 +1,6 @@
 package main.java.backend.services;
 
 import main.java.backend.models.Cell;
-import main.java.backend.models.Grid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,9 @@ public class AStar {
     boolean closed[][];
     Cell source;
     Cell destination;
+
+    List<List<Cell>> openStates = new ArrayList<>();
+    List<Cell> closedStates = new ArrayList<>();
 
     public AStar(Cell source, Cell destination, List<List<Cell>> grid){
         this.source = source;
@@ -50,6 +52,14 @@ public class AStar {
         this.destination = destination;
     }
 
+    public List<List<Cell>> getOpenStates() {
+        return openStates;
+    }
+
+    public List<Cell> getClosedStates() {
+        return closedStates;
+    }
+
     public void checkAndUpdateCost(Cell current, Cell t, int cost){
         if(t.getValue() == -1 || closed[t.getI()][t.getJ()])return;
         //if(t == null || closed[t.getI()][t.getJ()])return;
@@ -70,9 +80,15 @@ public class AStar {
         List<Cell> path ;
         Cell current;
         while(true){
+            List<Cell> currentOpen = new ArrayList<>();
+            for(Cell cell : open) currentOpen.add(cell);
+            openStates.add(currentOpen);
+
             current = open.poll();
             if(current.getValue()==-1)break;
             //if(current==null)break;
+
+            closedStates.add(current);
             closed[current.getI()][current.getJ()]=true;
 
             if(current.equals(destination)){

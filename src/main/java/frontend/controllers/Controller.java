@@ -22,9 +22,8 @@ import main.java.backend.services.AStar;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Controller implements Initializable {
 
@@ -63,7 +62,7 @@ public class Controller implements Initializable {
     private double pressedY;
     private int eraserClicks =0;
     List<Cell> path = new ArrayList<>();
-
+    int closedSize =0;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         gridSize.textProperty().addListener(new ChangeListener<String>() {
@@ -84,6 +83,10 @@ public class Controller implements Initializable {
     public void handleClicks(MouseEvent event) {
         if(event.getSource()==btnSetGrid){
             try {
+                path = new ArrayList<>();
+                source = null;
+                destination = null;
+                src_dist_clicks = 0;
                 int size = Integer.parseInt(gridSize.getText());
                 Grid grid = new Grid(size,canvas.getHeight(),canvas.getWidth());
                 this.grid = grid;
@@ -91,8 +94,6 @@ public class Controller implements Initializable {
                 GraphicsContext gc = this.canvas.getGraphicsContext2D();
                 draw(gc,grid);
                 btnAddSrcDst.setDisable(false);
-                //source =null;
-                //destination = null;
             }catch (Exception e){
                 Alert a = new Alert(Alert.AlertType.WARNING);
                 a.setTitle("Warning");
@@ -255,6 +256,20 @@ public class Controller implements Initializable {
         }
     }
 
+    private void drawOpenCell(Cell cell, GraphicsContext gc) {
+        if(cell != null && cell!=source && cell != destination){
+            gc.setFill(Color.ORANGE);
+            gc.fillRect(cell.getX()+2,cell.getY()+2,cellWidth-4,cellWidth-4);
+        }
+    }
+
+    private void drawClosedCell(Cell cell, GraphicsContext gc) {
+        if(cell != null && cell!=source && cell != destination){
+            gc.setFill(Color.PINK);
+            gc.fillRect(cell.getX()+2,cell.getY()+2,cellWidth-4,cellWidth-4);
+        }
+    }
+
     private void eraseCell(Cell cell, GraphicsContext gc) {
         if(cell != null && cell!=source && cell != destination){
             gc.setFill(Color.WHITE);
@@ -320,9 +335,40 @@ public class Controller implements Initializable {
             for(Cell cell:path) eraseCell(cell,gc);
         }
         path = aStar.runAStar();
-        gc = canvas.getGraphicsContext2D();
-        for(Cell cell:path) {
-            drawCellPath(cell,gc);
+        closedSize = aStar.getClosedStates().size();
+        Timer myTimer = new Timer();
+        synchronized (this){
+            myTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    if(closedSize>0){
+                        GraphicsContext gc = canvas.getGraphicsContext2D();
+                        for(Cell cell:aStar.getOpenStates().get(aStar.getClosedStates().size()-closedSize)){
+                            drawOpenCell(cell,gc);
+                        }
+                        drawClosedCell(aStar.getClosedStates().get(aStar.getClosedStates().size()-closedSize),gc);
+                        closedSize--;
+                    }else{
+                        for(Cell cell:path) {
+                            drawCellPath(cell,gc);
+                        }
+                    }
+
+                }
+            }, 0, 100);
+
         }
+
+    }
+
+
+    public static void main(String[] args) {
+        Timer myTimer = new Timer();
+        myTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("hi");
+            }
+        }, 0, 1000);
     }
 }
