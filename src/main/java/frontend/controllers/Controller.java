@@ -87,6 +87,7 @@ public class Controller implements Initializable {
                 source = null;
                 destination = null;
                 src_dist_clicks = 0;
+                closedSize = 0;
                 int size = Integer.parseInt(gridSize.getText());
                 Grid grid = new Grid(size,canvas.getHeight(),canvas.getWidth());
                 this.grid = grid;
@@ -288,6 +289,10 @@ public class Controller implements Initializable {
                 if(cell.getValue()==2 && (cell.getX()!=destination.getX() || cell.getY()!=destination.getY())) {
                     grid.getGrid().get(i).get(j).setValue(0);
                 }
+                if(cell.getValue()==0) {
+                    GraphicsContext gc  = canvas.getGraphicsContext2D();
+                    eraseCell(cell,gc);
+                }
             }
         }
     }
@@ -337,28 +342,24 @@ public class Controller implements Initializable {
         path = aStar.runAStar();
         closedSize = aStar.getClosedStates().size();
         Timer myTimer = new Timer();
-        synchronized (this){
-            myTimer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    if(closedSize>0){
-                        GraphicsContext gc = canvas.getGraphicsContext2D();
-                        for(Cell cell:aStar.getOpenStates().get(aStar.getClosedStates().size()-closedSize)){
-                            drawOpenCell(cell,gc);
-                        }
-                        drawClosedCell(aStar.getClosedStates().get(aStar.getClosedStates().size()-closedSize),gc);
-                        closedSize--;
-                    }else{
-                        for(Cell cell:path) {
-                            drawCellPath(cell,gc);
-                        }
+        myTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (closedSize > 0) {
+                    GraphicsContext gc = canvas.getGraphicsContext2D();
+                    for (Cell cell : aStar.getOpenStates().get(aStar.getClosedStates().size() - closedSize)) {
+                        drawOpenCell(cell, gc);
                     }
-
+                    drawClosedCell(aStar.getClosedStates().get(aStar.getClosedStates().size() - closedSize), gc);
+                    closedSize--;
+                } else {
+                    for (Cell cell : path) {
+                        drawCellPath(cell, gc);
+                    }
                 }
-            }, 0, 100);
 
-        }
-
+            }
+        }, 0, 100);
     }
 
 

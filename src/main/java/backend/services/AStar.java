@@ -23,6 +23,8 @@ public class AStar {
         this.source = source;
         this.destination = destination;
         this.grid = grid;
+        openStates = new ArrayList<>();
+        closedStates = new ArrayList<>();
         closed = new boolean[grid.size()][grid.size()];
         open = new PriorityQueue<>((Object o1, Object o2) -> {
             Cell c1 = (Cell)o1;
