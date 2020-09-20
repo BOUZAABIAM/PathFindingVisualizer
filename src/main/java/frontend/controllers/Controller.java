@@ -375,7 +375,7 @@ public class Controller implements Initializable {
                 }
 
             }
-        }, 0, 100/speed>0?100/speed:1);
+        }, 100/speed>0?100/speed:1, 100/speed>0?100/speed:1);
 
         for(int i=0;i<this.grid.getGrid().size();i++) {
             for(int j=0;j<this.grid.getGrid().size();j++){
