@@ -2,6 +2,8 @@ package main.java.frontend.controllers;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,6 +11,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.image.Image;
@@ -51,6 +54,9 @@ public class Controller implements Initializable {
     @FXML
     private ImageView eraser;
 
+    @FXML
+    private ChoiceBox<Integer> cbSpeed;
+
     private int src_dist_clicks =0;
     private Grid grid;
     private double cellWidth;
@@ -63,8 +69,13 @@ public class Controller implements Initializable {
     private int eraserClicks =0;
     List<Cell> path = new ArrayList<>();
     int closedSize =0;
+    private ObservableList speed = FXCollections.observableArrayList();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.speed.removeAll();
+        this.speed.addAll(1,2,8,10,20,50,100,1000);
+        cbSpeed.getItems().addAll(this.speed);
         gridSize.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
@@ -333,6 +344,9 @@ public class Controller implements Initializable {
     }
 
     public void runAStar(){
+        int speed;
+        if(cbSpeed.getValue()==null) speed =1;
+        else speed = cbSpeed.getValue();
         List<List<Cell>> g = new ArrayList<>();
         for(List<Cell> line : this.grid.getGrid()) g.add(line);
         AStar aStar = new AStar(source,destination,g);
@@ -361,7 +375,7 @@ public class Controller implements Initializable {
                 }
 
             }
-        }, 0, 100);
+        }, 0, 100/speed>0?100/speed:1);
 
         for(int i=0;i<this.grid.getGrid().size();i++) {
             for(int j=0;j<this.grid.getGrid().size();j++){
