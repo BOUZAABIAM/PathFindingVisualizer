@@ -333,12 +333,14 @@ public class Controller implements Initializable {
     }
 
     public void runAStar(){
-        List<List<Cell>> g = grid.getGrid();
+        List<List<Cell>> g = new ArrayList<>();
+        for(List<Cell> line : this.grid.getGrid()) g.add(line);
         AStar aStar = new AStar(source,destination,g);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         if(path.size()>0){
             for(Cell cell:path) eraseCell(cell,gc);
         }
+        path = new ArrayList<>();
         path = aStar.runAStar();
         closedSize = aStar.getClosedStates().size();
         Timer myTimer = new Timer();
@@ -347,7 +349,7 @@ public class Controller implements Initializable {
             public void run() {
                 if (closedSize > 0) {
                     GraphicsContext gc = canvas.getGraphicsContext2D();
-                    for (Cell cell : aStar.getOpenStates().get(aStar.getClosedStates().size() - closedSize)) {
+                    for (Cell cell : aStar.getOpenStates().get(aStar.getOpenStates().size() - closedSize)) {
                         drawOpenCell(cell, gc);
                     }
                     drawClosedCell(aStar.getClosedStates().get(aStar.getClosedStates().size() - closedSize), gc);
@@ -360,6 +362,17 @@ public class Controller implements Initializable {
 
             }
         }, 0, 100);
+
+        for(int i=0;i<this.grid.getGrid().size();i++) {
+            for(int j=0;j<this.grid.getGrid().size();j++){
+                Cell cell = this.grid.getGrid().get(i).get(j);
+                Cell toadd = new Cell(cell.getX(),cell.getY(),cell.getI(),cell.getJ(),cell.getValue());
+                this.grid.getGrid().get(i).set(j,toadd);
+
+            }
+        }
+
+
     }
 
 

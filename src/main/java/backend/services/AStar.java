@@ -16,8 +16,10 @@ public class AStar {
     Cell source;
     Cell destination;
 
-    List<List<Cell>> openStates = new ArrayList<>();
-    List<Cell> closedStates = new ArrayList<>();
+    private List<List<Cell>> openStates = new ArrayList<>();
+    private List<Cell> closedStates = new ArrayList<>();
+    private List<Cell> path ;
+
 
     public AStar(Cell source, Cell destination, List<List<Cell>> grid){
         this.source = source;
@@ -25,6 +27,7 @@ public class AStar {
         this.grid = grid;
         openStates = new ArrayList<>();
         closedStates = new ArrayList<>();
+        path = new ArrayList<>();
         closed = new boolean[grid.size()][grid.size()];
         open = new PriorityQueue<>((Object o1, Object o2) -> {
             Cell c1 = (Cell)o1;
@@ -42,6 +45,8 @@ public class AStar {
         }
         grid.get(source.getI()).get(source.getJ()).setFinalCost(0);
     }
+
+
     public void setBlocked(int i, int j){
         grid.get(i).set(j,null);
     }
@@ -62,6 +67,10 @@ public class AStar {
         return closedStates;
     }
 
+    public List<Cell> getPath() {
+        return path;
+    }
+
     public void checkAndUpdateCost(Cell current, Cell t, int cost){
         if(t.getValue() == -1 || closed[t.getI()][t.getJ()])return;
         //if(t == null || closed[t.getI()][t.getJ()])return;
@@ -79,7 +88,8 @@ public class AStar {
     public List<Cell> runAStar(){
         //add the start location to open list.
         open.add(source);
-        List<Cell> path ;
+        //List<Cell> path ;
+        path = new ArrayList<>();
         Cell current;
         while(true){
             List<Cell> currentOpen = new ArrayList<>();
